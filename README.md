@@ -31,14 +31,17 @@ Qt-Mini-Games/
 ├── game.cpp             # Core game logic
 └── README.md            # Project documentation
 
-🎮 Features
+##🎮 Features
 ✅ Classic Snake movement logic
 ✅ Arrow key control
 ✅ Random food generation
 ✅ Collision detection (wall & self)
 ✅ Clean & modern UI
 ✅ Ready to compile & run
-🚀 Quick Start
+
+---
+
+##🚀 Quick Start
 1. Requirements
 Qt 5.15+ or Qt 6 installed
 CMake 3.16+
@@ -48,14 +51,23 @@ Open the project in Qt Creator
 Configure CMake
 Build and run directly
 No extra setup required — ready to use ✅
-💡 Learning Value
+
+---
+
+##💡 Learning Value
 This project is ideal for:
 Qt beginners learning GUI development
 Learning object-oriented C++
 Mastering CMake project management
 Understanding 2D mini-game development
 Building personal practice projects for GitHub
-👨‍💻 Author
+
+---
+
+##👨‍💻 Author
 Jason-Ch02Qt learning projectGitHub: https://github.com/Jason-Ch02
-⭐ Support
+
+---
+
+##⭐ Support
 Feel free to Star & Fork this project!Let's learn Qt development together.
