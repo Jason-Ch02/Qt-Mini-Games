@@ -22,4 +22,8 @@
 - **功能说明**：负责存储、同步玩家的最高分数据，为游戏提供在线排行支持
 
 ---
+### 3.游戏画面：
+<img width="1250" height="909" alt="a3e19eca4500c5f1d95b2be9a38fa310" src="https://github.com/user-attachments/assets/e37edf9c-bd37-43a1-a444-c4227a9583b0" />
+<img width="1252" height="911" alt="9f3234ad33e14c599dd7a0297751c429" src="https://github.com/user-attachments/assets/2b06345f-da01-4350-bd77-8f37c99c993b" />
+界面主要采用Taffy风格，可爱又灵动。
 
