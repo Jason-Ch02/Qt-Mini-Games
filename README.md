@@ -23,7 +23,8 @@
 
 ---
 ### 3.游戏画面：
-<img width="1250" height="909" alt="a3e19eca4500c5f1d95b2be9a38fa310" src="https://github.com/user-attachments/assets/e37edf9c-bd37-43a1-a444-c4227a9583b0" />
-<img width="1252" height="911" alt="9f3234ad33e14c599dd7a0297751c429" src="https://github.com/user-attachments/assets/2b06345f-da01-4350-bd77-8f37c99c993b" />
-界面主要采用Taffy风格，可爱又灵动。
+<img width="600" height="450" alt="a3e19eca4500c5f1d95b2be9a38fa310" src="https://github.com/user-attachments/assets/e37edf9c-bd37-43a1-a444-c4227a9583b0" />
+<img width="630" height="452" alt="9f3234ad33e14c599dd7a0297751c429" src="https://github.com/user-attachments/assets/2b06345f-da01-4350-bd77-8f37c99c993b" />
+
+界面主要采用Taffy风格，包括音乐与音效，还支持把你的游玩记录上传至排行榜，与所有玩家一教高下。
 
