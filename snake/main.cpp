@@ -19,7 +19,7 @@ int main(int argc, char *argv[])
 
     std::srand(static_cast<unsigned>(std::time(nullptr)));
 
-    LeaderboardClient::setServerUrl("https://qt-mini-games-production.up.railway.app");
+    LeaderboardClient::setServerUrl("https://lively-balance-s.up.railway.app");
 
     Index *loginWindow = new Index();
     Widget *gameWindow = new Widget();

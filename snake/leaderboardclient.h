@@ -27,6 +27,6 @@ private slots:
 
 private:
     QNetworkAccessManager *manager;
-    static inline QString serverUrl = "http://localhost:3000";
+    static inline QString serverUrl = "https://lively-balance-s.up.railway.app";
 };
 #endif // LEADERBOARDCLIENT_H
