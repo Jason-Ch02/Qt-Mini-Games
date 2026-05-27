@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>贪吃蛇排行榜</title>
     <style>
-        /* ===== 页面整体 ===== */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         body {
             background: #1a1a2e;
@@ -18,10 +17,36 @@
         }
         .container { width: 100%; max-width: 600px; padding: 20px; }
 
-        /* ===== 标题 ===== */
         h1 {
             text-align: center; font-size: 28px;
-            margin-bottom: 24px; color: #e94560; letter-spacing: 2px;
+            margin-bottom: 16px; color: #e94560; letter-spacing: 2px;
+        }
+
+        /* ===== 标签切换 ===== */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 0;
+            margin-bottom: 20px;
+            border-radius: 8px;
+            overflow: hidden;
+        }
+        .tab-btn {
+            flex: 1;
+            max-width: 160px;
+            padding: 10px 0;
+            border: none;
+            background: #16213e;
+            color: #aaa;
+            font-size: 15px;
+            font-family: inherit;
+            cursor: pointer;
+            transition: background 0.2s, color 0.2s;
+        }
+        .tab-btn.active {
+            background: #e94560;
+            color: #fff;
+            font-weight: bold;
         }
 
         /* ===== 表格 ===== */
@@ -34,15 +59,12 @@
         }
         td { border-bottom: 1px solid #333; }
 
-        /* ===== 前三名高亮 ===== */
         tr:nth-child(2) td:first-child { color: #ffd700; font-weight: bold; }
         tr:nth-child(3) td:first-child { color: #c0c0c0; font-weight: bold; }
         tr:nth-child(4) td:first-child { color: #cd7f32; font-weight: bold; }
 
-        /* ===== 空状态 ===== */
         .empty { text-align: center; padding: 60px 0; color: #666; font-size: 18px; }
 
-        /* ===== 底部 ===== */
         .footer { text-align: center; margin-top: 20px; color: #555; font-size: 13px; }
         .footer span { color: #e94560; cursor: pointer; }
     </style>
@@ -50,19 +72,36 @@
 <body>
     <div class="container">
         <h1>贪吃蛇排行榜</h1>
+
+        <div class="tabs">
+            <button class="tab-btn active" id="tabLive" onclick="switchTab('live')">实时排行</button>
+            <button class="tab-btn" id="tabAlltime" onclick="switchTab('alltime')">历史总榜</button>
+        </div>
+
         <div id="app">
             <div class="empty">加载中...</div>
         </div>
+
         <div class="footer">
             每 <span onclick="location.reload()">30 秒</span> 自动刷新 | 点击刷新
         </div>
     </div>
 
     <script>
+        var currentTab = 'live';
+
+        function switchTab(tab) {
+            currentTab = tab;
+            document.getElementById('tabLive').className = 'tab-btn' + (tab === 'live' ? ' active' : '');
+            document.getElementById('tabAlltime').className = 'tab-btn' + (tab === 'alltime' ? ' active' : '');
+            loadLeaderboard();
+        }
+
         async function loadLeaderboard() {
             var app = document.getElementById('app');
+            var api = currentTab === 'alltime' ? '/alltime' : '/leaderboard';
             try {
-                var resp = await fetch('/leaderboard');
+                var resp = await fetch(api);
                 var data = await resp.json();
                 if (data.length === 0) {
                     app.innerHTML = '<div class="empty">暂无记录，快来玩一局吧！</div>';
@@ -86,6 +125,7 @@
                 app.innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
             }
         }
+
         loadLeaderboard();
         setInterval(loadLeaderboard, 30000);
     </script>
