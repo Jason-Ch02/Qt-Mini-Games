@@ -1,8 +1,8 @@
 const express = require('express');
 const cors = require('cors');
-const path = require('path');
+const fs = require('fs');
 const app = express();
-const PORT = process.env.PORT || 3000;
+const PORT = 3000;
 
 app.use(cors());
 app.use(express.json());
@@ -17,7 +17,6 @@ app.post('/submit', (req, res) => {
     const cleanName = name.trim().slice(0, 20);
     const now = new Date().toLocaleString('zh-CN');
 
-    // Update existing player's score if higher, otherwise add new entry
     const existingIdx = scores.findIndex(e => e.name === cleanName);
     if (existingIdx >= 0) {
         if (score > scores[existingIdx].score) {
@@ -43,8 +42,9 @@ app.get('/leaderboard', (req, res) => {
 // ============================================================
 // 网页界面在 index.html — 所有 HTML/CSS/JS 都在那个文件里
 // ============================================================
+const htmlCache = fs.readFileSync(__dirname + '/index.html', 'utf-8');
 app.get('/', (req, res) => {
-    res.sendFile(path.join(__dirname, 'index.html'));
+    res.type('html').send(htmlCache);
 });
 
 app.listen(PORT, '0.0.0.0', () => {
