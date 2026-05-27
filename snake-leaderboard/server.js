@@ -1,5 +1,6 @@
 const express = require('express');
 const cors = require('cors');
+const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
@@ -40,141 +41,10 @@ app.get('/leaderboard', (req, res) => {
 });
 
 // ============================================================
-// 网页界面 — 下面就是你要修改的 HTML/CSS
+// 网页界面在 index.html — 所有 HTML/CSS/JS 都在那个文件里
 // ============================================================
 app.get('/', (req, res) => {
-    res.send(`<!DOCTYPE html>
-<html lang="zh-CN">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>贪吃蛇排行榜</title>
-    <style>
-        /* ===== 页面整体样式 ===== */
-        * { margin: 0; padding: 0; box-sizing: border-box; }
-        body {
-            background: #1a1a2e;
-            color: #eee;
-            font-family: "Microsoft YaHei", "PingFang SC", sans-serif;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-        }
-
-        /* ===== 主容器 ===== */
-        .container {
-            width: 100%;
-            max-width: 600px;
-            padding: 20px;
-        }
-
-        /* ===== 标题 ===== */
-        h1 {
-            text-align: center;
-            font-size: 28px;
-            margin-bottom: 24px;
-            color: #e94560;
-            letter-spacing: 2px;
-        }
-
-        /* ===== 排行榜表格 ===== */
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        th, td {
-            padding: 12px 16px;
-            text-align: center;
-        }
-        th {
-            background: #16213e;
-            color: #aaa;
-            font-weight: normal;
-            font-size: 14px;
-            border-bottom: 2px solid #e94560;
-        }
-        td {
-            border-bottom: 1px solid #333;
-        }
-
-        /* ===== 前三名高亮 ===== */
-        tr:nth-child(2) td:first-child { color: #ffd700; font-weight: bold; } /* 金牌 */
-        tr:nth-child(3) td:first-child { color: #c0c0c0; font-weight: bold; } /* 银牌 */
-        tr:nth-child(4) td:first-child { color: #cd7f32; font-weight: bold; } /* 铜牌 */
-
-        /* ===== 空状态 ===== */
-        .empty {
-            text-align: center;
-            padding: 60px 0;
-            color: #666;
-            font-size: 18px;
-        }
-
-        /* ===== 底部信息 ===== */
-        .footer {
-            text-align: center;
-            margin-top: 20px;
-            color: #555;
-            font-size: 13px;
-        }
-        .footer span {
-            color: #e94560;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1>🐍 贪吃蛇排行榜</h1>
-        <div id="app">
-            <div class="empty">加载中...</div>
-        </div>
-        <div class="footer">
-            每 <span onclick="location.reload()">30 秒</span> 自动刷新 | 点击刷新
-        </div>
-    </div>
-
-    <script>
-        async function loadLeaderboard() {
-            const app = document.getElementById('app');
-            try {
-                const resp = await fetch('/leaderboard');
-                const data = await resp.json();
-
-                if (data.length === 0) {
-                    app.innerHTML = '<div class="empty">暂无记录，快来玩一局吧！</div>';
-                    return;
-                }
-
-                let html = '<table>';
-                html += '<tr><th>排名</th><th>玩家</th><th>分数</th><th>时间</th></tr>';
-                data.forEach((entry, i) => {
-                    html += \`<tr>
-                        <td>\${i + 1}</td>
-                        <td>\${escapeHtml(entry.name)}</td>
-                        <td>\${entry.score}</td>
-                        <td>\${entry.time}</td>
-                    </tr>\`;
-                });
-                html += '</table>';
-                app.innerHTML = html;
-            } catch (e) {
-                app.innerHTML = '<div class="empty">加载失败，请刷新重试</div>';
-            }
-        }
-
-        function escapeHtml(text) {
-            const div = document.createElement('div');
-            div.textContent = text;
-            return div.innerHTML;
-        }
-
-        loadLeaderboard();
-        setInterval(loadLeaderboard, 30000);
-    </script>
-</body>
-</html>`);
+    res.sendFile(path.join(__dirname, 'index.html'));
 });
 
 app.listen(PORT, '0.0.0.0', () => {
