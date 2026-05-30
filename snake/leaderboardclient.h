@@ -17,6 +17,14 @@ public:
     static void setFallbackUrl(const QString &url);
     static QString currentServerUrl();
     static void trySwitchToFallback();
+    // 判断是否为网络连接错误（非 HTTP 状态码错误）
+    static bool isNetworkError(QNetworkReply::NetworkError error) {
+        return error == QNetworkReply::ConnectionRefusedError
+            || error == QNetworkReply::HostNotFoundError
+            || error == QNetworkReply::TimeoutError
+            || error == QNetworkReply::NetworkError
+            || error == QNetworkReply::UnknownNetworkError;
+    }
 
 signals:
     void scoreSubmitted(int rank);
@@ -30,10 +38,11 @@ private slots:
 
 private:
     QNetworkAccessManager *manager;
-    // 主服务器（Railway 云端）- 试用期结束后可能不可用
+    // 主服务器（Railway 云端）
     static inline QString serverUrl = "https://lively-balance-s.up.railway.app";
-    // 备用服务器（本地 MySQL）- 主服务器不可用时自动切换
-    static inline QString fallbackUrl = "http://localhost:3000";
+    // 备用服务器（ngrok 公网隧道 → 本地 MySQL）
+    // 当 Railway 不可用时自动切换
+    static inline QString fallbackUrl = "https://eclipse-bridged-credibly.ngrok-free.dev";
     // 当前是否使用备用服务器
     static inline bool useFallback = false;
 };

@@ -27,7 +27,7 @@ MediaManager::MediaManager(QWidget *parent)
     m_videoPlayer->setAudioOutput(m_videoAudio);
     m_videoPlayer->setVideoOutput(m_videoWidget);
 
-    QString videoPath = mediaPath("xf.mp4");
+    QString videoPath = mediaPath("xf_20260524142953.mp4");
     if (!videoPath.isEmpty())
         m_videoPlayer->setSource(QUrl::fromLocalFile(videoPath));
 

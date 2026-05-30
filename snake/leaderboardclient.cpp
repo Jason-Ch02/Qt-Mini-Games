@@ -38,6 +38,8 @@ void LeaderboardClient::submitScore(const QString &playerName, int score)
     QUrl url(currentServerUrl() + "/submit");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    // 跳过 ngrok 免费版警告页
+    request.setRawHeader("ngrok-skip-browser-warning", "true");
 
     QJsonObject data;
     data["name"] = playerName;
@@ -51,6 +53,8 @@ void LeaderboardClient::fetchLeaderboard()
 {
     QUrl url(currentServerUrl() + "/leaderboard");
     QNetworkRequest request(url);
+    // 跳过 ngrok 免费版警告页
+    request.setRawHeader("ngrok-skip-browser-warning", "true");
     QNetworkReply *reply = manager->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() { onLeaderboardReply(reply); });
 }
@@ -65,8 +69,8 @@ void LeaderboardClient::onSubmitReply(QNetworkReply *reply)
         else
             emit scoreSubmitFailed("服务器返回异常");
     } else {
-        // 连接失败时自动切换到备用服务器
-        if (!useFallback && reply->error() == QNetworkReply::ConnectionRefusedError) {
+        // 任意网络错误自动切换到备用服务器（ngrok）
+        if (!useFallback && isNetworkError(reply->error())) {
             trySwitchToFallback();
         }
         emit scoreSubmitFailed(reply->errorString());
@@ -83,8 +87,8 @@ void LeaderboardClient::onLeaderboardReply(QNetworkReply *reply)
         else
             emit leaderboardFetchFailed("格式错误");
     } else {
-        // 连接失败时自动切换到备用服务器
-        if (!useFallback && reply->error() == QNetworkReply::ConnectionRefusedError) {
+        // 任意网络错误自动切换到备用服务器（ngrok）
+        if (!useFallback && isNetworkError(reply->error())) {
             trySwitchToFallback();
         }
         emit leaderboardFetchFailed(reply->errorString());
