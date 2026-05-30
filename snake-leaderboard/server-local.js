@@ -61,6 +61,7 @@ async function getPool() {
     if (!pool) {
         pool = mysql.createPool({
             ...DB_CONFIG,
+            charset: 'utf8mb4',
             waitForConnections: true,
             connectionLimit: 10,
         });
@@ -173,7 +174,6 @@ app.get('/stats', async (req, res) => {
 });
 
 // ==================== 网页界面 ====================
-const fs = require('fs');
 const htmlCache = fs.readFileSync(__dirname + '/index.html', 'utf-8');
 app.get('/', (req, res) => {
     res.type('html').send(htmlCache);
