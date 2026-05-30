@@ -85,6 +85,11 @@ app.get('/alltime', (req, res) => {
     res.json(alltimeScores.slice(0, 10));
 });
 
+// ---- 全量数据导出 API（用于数据迁移） ----
+app.get('/export', (req, res) => {
+    res.json(alltimeScores);
+});
+
 // ---- 网页界面 ----
 const htmlCache = fs.readFileSync(__dirname + '/index.html', 'utf-8');
 app.get('/', (req, res) => {

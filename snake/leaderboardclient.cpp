@@ -10,6 +10,24 @@ void LeaderboardClient::setServerUrl(const QString &url)
     serverUrl = url;
 }
 
+void LeaderboardClient::setFallbackUrl(const QString &url)
+{
+    fallbackUrl = url;
+}
+
+QString LeaderboardClient::currentServerUrl()
+{
+    return useFallback ? fallbackUrl : serverUrl;
+}
+
+void LeaderboardClient::trySwitchToFallback()
+{
+    if (!useFallback && !fallbackUrl.isEmpty()) {
+        useFallback = true;
+        qDebug() << "⚠ 主服务器不可用，已切换到备用服务器:" << fallbackUrl;
+    }
+}
+
 LeaderboardClient::LeaderboardClient(QObject *parent) : QObject(parent)
 {
     manager = new QNetworkAccessManager(this);
@@ -17,7 +35,7 @@ LeaderboardClient::LeaderboardClient(QObject *parent) : QObject(parent)
 
 void LeaderboardClient::submitScore(const QString &playerName, int score)
 {
-    QUrl url(serverUrl + "/submit");
+    QUrl url(currentServerUrl() + "/submit");
     QNetworkRequest request(url);
     request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
 
@@ -31,7 +49,7 @@ void LeaderboardClient::submitScore(const QString &playerName, int score)
 
 void LeaderboardClient::fetchLeaderboard()
 {
-    QUrl url(serverUrl + "/leaderboard");
+    QUrl url(currentServerUrl() + "/leaderboard");
     QNetworkRequest request(url);
     QNetworkReply *reply = manager->get(request);
     connect(reply, &QNetworkReply::finished, this, [this, reply]() { onLeaderboardReply(reply); });
@@ -47,6 +65,10 @@ void LeaderboardClient::onSubmitReply(QNetworkReply *reply)
         else
             emit scoreSubmitFailed("服务器返回异常");
     } else {
+        // 连接失败时自动切换到备用服务器
+        if (!useFallback && reply->error() == QNetworkReply::ConnectionRefusedError) {
+            trySwitchToFallback();
+        }
         emit scoreSubmitFailed(reply->errorString());
     }
     reply->deleteLater();
@@ -61,6 +83,10 @@ void LeaderboardClient::onLeaderboardReply(QNetworkReply *reply)
         else
             emit leaderboardFetchFailed("格式错误");
     } else {
+        // 连接失败时自动切换到备用服务器
+        if (!useFallback && reply->error() == QNetworkReply::ConnectionRefusedError) {
+            trySwitchToFallback();
+        }
         emit leaderboardFetchFailed(reply->errorString());
     }
     reply->deleteLater();
