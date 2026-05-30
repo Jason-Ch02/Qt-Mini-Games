@@ -17,13 +17,10 @@ public:
     static void setFallbackUrl(const QString &url);
     static QString currentServerUrl();
     static void trySwitchToFallback();
-    // 判断是否为网络连接错误（非 HTTP 状态码错误）
-    static bool isNetworkError(QNetworkReply::NetworkError error) {
-        return error == QNetworkReply::ConnectionRefusedError
-            || error == QNetworkReply::HostNotFoundError
-            || error == QNetworkReply::TimeoutError
-            || error == QNetworkReply::NetworkError
-            || error == QNetworkReply::UnknownNetworkError;
+    static bool isNetworkError(QNetworkReply::NetworkError err) {
+        return err == QNetworkReply::ConnectionRefusedError
+            || err == QNetworkReply::HostNotFoundError
+            || err == QNetworkReply::TimeoutError;
     }
 
 signals:
