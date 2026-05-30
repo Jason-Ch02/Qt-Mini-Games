@@ -35,18 +35,34 @@ LeaderboardClient::LeaderboardClient(QObject *parent) : QObject(parent)
 
 void LeaderboardClient::submitScore(const QString &playerName, int score)
 {
-    QUrl url(currentServerUrl() + "/submit");
-    QNetworkRequest request(url);
-    request.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
-    // 跳过 ngrok 免费版警告页
-    request.setRawHeader("ngrok-skip-browser-warning", "true");
-
     QJsonObject data;
     data["name"] = playerName;
     data["score"] = score;
+    QByteArray jsonData = QJsonDocument(data).toJson();
 
-    QNetworkReply *reply = manager->post(request, QJsonDocument(data).toJson());
-    connect(reply, &QNetworkReply::finished, this, [this, reply]() { onSubmitReply(reply); });
+    // 同时向主服务器提交
+    QUrl primaryUrl(serverUrl + "/submit");
+    QNetworkRequest primaryReq(primaryUrl);
+    primaryReq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+    primaryReq.setRawHeader("ngrok-skip-browser-warning", "true");
+    QNetworkReply *primaryReply = manager->post(primaryReq, jsonData);
+    connect(primaryReply, &QNetworkReply::finished, this, [this, primaryReply]() { onSubmitReply(primaryReply); });
+
+    // 同时向备用服务器提交（双写，保证两边数据一致）
+    if (!fallbackUrl.isEmpty() && fallbackUrl != serverUrl) {
+        QUrl fallbackU(fallbackUrl + "/submit");
+        QNetworkRequest fallbackReq(fallbackU);
+        fallbackReq.setHeader(QNetworkRequest::ContentTypeHeader, "application/json");
+        fallbackReq.setRawHeader("ngrok-skip-browser-warning", "true");
+        QNetworkReply *fallbackReply = manager->post(fallbackReq, jsonData);
+        connect(fallbackReply, &QNetworkReply::finished, this, [this, fallbackReply]() {
+            // 备用服务器静默处理，不影响主流程
+            if (fallbackReply->error() != QNetworkReply::NoError) {
+                qDebug() << "备用服务器提交失败(可忽略):" << fallbackReply->errorString();
+            }
+            fallbackReply->deleteLater();
+        });
+    }
 }
 
 void LeaderboardClient::fetchLeaderboard()
