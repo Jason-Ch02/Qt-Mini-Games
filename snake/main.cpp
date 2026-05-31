@@ -14,6 +14,9 @@ int main(int argc, char *argv[])
 
     QString appDir = QCoreApplication::applicationDirPath();
     QString iconPath = appDir + "/head.png";
+    // 开发时 build 目录没有图片，往上找源码目录
+    if (!QFile::exists(iconPath)) iconPath = appDir + "/../../head.png";
+    if (!QFile::exists(iconPath)) iconPath = appDir + "/../head.png";
     if (QFile::exists(iconPath))
         a.setWindowIcon(QIcon(iconPath));
 

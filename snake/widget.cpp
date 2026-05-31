@@ -112,7 +112,11 @@ Widget::Widget(QWidget *parent)
     QString appDir = QCoreApplication::applicationDirPath();
 
     auto loadOrFallback = [&](QPixmap &pm, const QString &path, const QSize &size, const QColor &color) {
-        if (!pm.load(appDir + "/" + path) || pm.isNull()) {
+        // 查找图片：exe目录 → 源码目录（开发时）
+        QString fullPath = appDir + "/" + path;
+        if (!QFile::exists(fullPath)) fullPath = appDir + "/../../" + path;
+        if (!QFile::exists(fullPath)) fullPath = appDir + "/../" + path;
+        if (!pm.load(fullPath) || pm.isNull()) {
             pm = QPixmap(size);
             pm.fill(color);
         }
