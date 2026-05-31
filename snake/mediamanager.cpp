@@ -9,9 +9,18 @@ MediaManager::MediaManager(QWidget *parent)
 {
     QString appDir = QCoreApplication::applicationDirPath();
 
+    // 查找媒体文件：优先 exe 同目录，再查源码目录（开发时 build 目录没有媒体文件）
     auto mediaPath = [&](const QString &filename) -> QString {
+        // 1) exe 所在目录（发布时用）
         QString path = appDir + "/" + filename;
-        return QFile::exists(path) ? path : QString();
+        if (QFile::exists(path)) return path;
+        // 2) 源码目录（开发时 build/xxx 往上两级）
+        path = appDir + "/../../" + filename;
+        if (QFile::exists(path)) return path;
+        // 3) 源码目录平级（部分构建配置）
+        path = appDir + "/../" + filename;
+        if (QFile::exists(path)) return path;
+        return QString();
     };
 
     // ---- Video Player ----
